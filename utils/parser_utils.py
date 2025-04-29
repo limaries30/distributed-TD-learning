@@ -17,7 +17,7 @@ def make_parser():
 
 
     
-    parser.add_argument('--exp_id',default="", type=str)
+    parser.add_argument('--exp_id',default="7cc8c", type=str)
     parser.add_argument('--agent_name',type=str,default="WangElia")
     parser.add_argument('--env_name',type=str,default="DistributedRandomMDP")
     parser.add_argument('--num_states',type=int,default=3)

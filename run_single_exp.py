@@ -8,7 +8,7 @@ import numpy as np
 
 def run_single_exp(args):
 
-    logger = Logger(save_dir=f'{args.save_dir}/{args.exp_id}')
+    logger = Logger(save_dir=f'{args.save_dir}/{args.exp_id}/{args.num_agents}')
 
 
     env_name = args.env_name
