@@ -14,17 +14,29 @@ def make_parser():
     parser.add_argument('--second_prefix_value',type=float, required=False)
     parser.add_argument('--save_dir_suffix',type=str, required=False)
     
+
+
     
     parser.add_argument('--exp_id',default="", type=str)
-    parser.add_argument('--agent_name',type=str,default="WangeElila")
-    parser.add_argument('--env_name',type=str,default="DistributedMDPFixed")
+    parser.add_argument('--agent_name',type=str,default="WangElia")
+    parser.add_argument('--env_name',type=str,default="DistributedRandomMDP")
     parser.add_argument('--num_states',type=int,default=3)
+
     parser.add_argument('--num_agents',type=int,default=8)
+    parser.add_argument('--total_steps',type=int,default=int(2*1e5))
 
     parser.add_argument('--num_features',type=int,default=2)
+    parser.add_argument('--feature_name',type=str,default="fourier_feature")
+
     parser.add_argument('--gamma',type=float,default=0.99)
+    parser.add_argument('--graph_type',type=str,default="ring")
+
+    parser.add_argument('--print_freq',type=int,default=50)
+    parser.add_argument('--save_dir',type=str,default="./results")
 
 
 
     # 입력받은 인자값을 args에 저장 (type: namespace)
     args = parser.parse_args()
+
+    return args
