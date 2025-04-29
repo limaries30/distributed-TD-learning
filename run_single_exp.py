@@ -4,20 +4,20 @@ from utils.mdp_utils import get_mdp
 from utils.agent_utils import get_agent
 from logging_module import Logger
 import yaml
-import numpy as np
 
-def run_single_exp(args):
+
+def run_single_exp(args,save=True)->Logger:
+
+    '''
+        save : save the loggre file
+    '''
 
     logger = Logger(save_dir=f'{args.save_dir}/{args.exp_id}/{args.num_agents}')
 
 
     env_name = args.env_name
-    num_states = args.num_states
     num_agents = int(args.num_agents)
-
-    num_features = args.num_features
-    gamma = args.gamma
-
+    
     graph_type = args.graph_type
     graph = get_graph(graph_type,num_agents)  # Characterizes the connection of the agents
 
@@ -46,8 +46,10 @@ def run_single_exp(args):
             print(f'steps: {steps}')
             print('primal_error',primal_error)
             print('dual_error',dual_error)
-        
-    logger.save_logs()
+    
+    if save:
+        logger.save_logs()
+    return logger
         
 
 if __name__ == '__main__':

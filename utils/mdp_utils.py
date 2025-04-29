@@ -4,6 +4,7 @@ import numpy as np
 
 def get_mdp(env_name:str,args,graph):
     from mdps.distributed_random_mdp import DistributedRandomMDP
+    from mdps.distributed_mdp_1 import DistributedMDP_1
 
     if env_name=="DistributedRandomMDP":
         return DistributedRandomMDP(num_states=args.num_states,num_features=args.num_features,
@@ -11,6 +12,11 @@ def get_mdp(env_name:str,args,graph):
                                     num_agents=args.num_agents,feature_name=args.feature_name,
                                     graph = graph
                                     )
+    if env_name=="DistributedMDP_1":
+        return DistributedMDP_1(num_states=args.num_states,num_features=args.num_features,
+                                    gamma=args.gamma,
+                                    num_agents=args.num_agents,feature_name=args.feature_name,
+                                    graph = graph)
     raise ValueError(f"Unknown env name {env_name}")
 
 

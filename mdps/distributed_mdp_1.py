@@ -22,9 +22,8 @@ class DistributedMDP_1(AbstractDistributedMDP):
         # Transition matrix size of (|S|, |S|)
         P = make_prob_matrix(num_states,num_states)
 
-
         # Reward matrix size of ( N,|S|, |S|)
-        barR = np.random.uniform(-1, 1, size=(num_agents, num_states , num_states)).round(2)
+        barR = np.random.uniform(0, 10, size=(num_agents, num_states , num_states)).round(2)
 
 
         

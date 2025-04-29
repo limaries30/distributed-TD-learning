@@ -19,7 +19,7 @@ def make_parser():
     
     parser.add_argument('--exp_id',default="7cc8c", type=str)
     parser.add_argument('--agent_name',type=str,default="WangElia")
-    parser.add_argument('--env_name',type=str,default="DistributedRandomMDP")
+    parser.add_argument('--env_name',type=str,default="DistributedMDP_1")
     parser.add_argument('--num_states',type=int,default=3)
 
     parser.add_argument('--num_agents',type=int,default=8)
@@ -28,10 +28,10 @@ def make_parser():
     parser.add_argument('--num_features',type=int,default=2)
     parser.add_argument('--feature_name',type=str,default="fourier_feature")
 
-    parser.add_argument('--gamma',type=float,default=0.99)
+    parser.add_argument('--gamma',type=float,default=0.8)
     parser.add_argument('--graph_type',type=str,default="ring")
 
-    parser.add_argument('--print_freq',type=int,default=50)
+    parser.add_argument('--print_freq',type=int,default=100)
     parser.add_argument('--save_dir',type=str,default="./results")
 
 
