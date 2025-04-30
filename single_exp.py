@@ -6,13 +6,13 @@ from logging_module import Logger
 import yaml
 
 
-def run_single_exp(args,agent_config,save=True)->Logger:
+def run_single_exp(args,agent_config,save_dir,save=True)->Logger:
 
     '''
         save : save the loggre file
     '''
 
-    logger = Logger(save_dir=f'{args.save_dir}/{args.exp_id}/{args.num_agents}')
+    logger = Logger(save_dir=save_dir)
 
 
     env_name = args.env_name
@@ -59,4 +59,5 @@ if __name__ == '__main__':
     args = make_parser()
     with open(f'./agents/configs/{args.agent_name}.yaml') as f:
         agent_config = yaml.load(f, Loader=yaml.FullLoader)
-    run_single_exp(args,agent_config)
+    save_dir= f'{args.log_root_dir}/{args.exp_id}/{args.num_agents}/{args.lr}'
+    run_single_exp(args,agent_config,save_dir)

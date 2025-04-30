@@ -13,6 +13,7 @@ class WangElia(AbstractAgent):
         self.gamma = gamma
         self.agent_config = agent_config
         self.lr = agent_config["alpha"]
+        self.eta = agent_config["eta"]
 
 
         self.bar_theta = np.random.uniform(-1,1,size=(num_agents*self.num_features,1))  # primary weight
@@ -37,11 +38,12 @@ class WangElia(AbstractAgent):
         A = -current_state@current_state.T+self.gamma*current_state@next_state.T # (num_feature,num_feature)
         barR = np.kron(reward,current_state)   #(num_agents*num_feature,1)
 
-        # caculate updates, avoid building large matrices
+        # Avoid building large matrices
         barAtheta = block_diag_matvec(A,self.bar_theta,self.num_agents)
-        barLtheta = kron_laplacian_matvec(self.bar_theta,self.laplacian_matrix,self.num_features)
-        barLw =   kron_laplacian_matvec(self.bar_w,self.laplacian_matrix,self.num_features)
+        barLtheta = self.eta*kron_laplacian_matvec(self.bar_theta,self.laplacian_matrix,self.num_features)
+        barLw =   self.eta*kron_laplacian_matvec(self.bar_w,self.laplacian_matrix,self.num_features)
 
+        # Caculate the primal and dual updates
         primal_delta = barR+   barAtheta - barLtheta -barLw
         dual_delta = barLtheta
 
