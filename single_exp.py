@@ -59,5 +59,6 @@ if __name__ == '__main__':
     args = make_parser()
     with open(f'./agents/configs/{args.agent_name}.yaml') as f:
         agent_config = yaml.load(f, Loader=yaml.FullLoader)
-    save_dir= f'{args.log_root_dir}/{args.exp_id}/{args.num_agents}/{args.lr}'
+    save_dir = f'{args.log_root_dir}/{args.exp_id}/{args.num_agents}/{args.graph_type}/\
+                 {args.agent_name}/{args.mixing_matrix_method}/{agent_config["alpha"]}'
     run_single_exp(args,agent_config,save_dir)

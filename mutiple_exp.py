@@ -10,19 +10,20 @@ def run_single_exp_wrapper(args_config_save_dir):
     args,agent_config,save_dir = args_config_save_dir
     return run_single_exp(args,agent_config,save_dir)
 
-def run_multiple_exp(args,agent_config,num_processes=5):
+def run_multiple_exp(args,agent_config,save_dir,num_processes=5):
+    
 
-    save_dir = f'{args.log_root_dir}/{args.exp_id}/{args.num_agents}/{agent_config["alpha"]}'
     with Pool(processes=num_processes) as pool:
         arg_list = [(copy.deepcopy(args),agent_config,save_dir) for _ in range(num_processes)]
         results = pool.map(run_single_exp_wrapper,arg_list)
     
-    avg = []
+    error_collection = []
     for result in results:
-        avg.append(result.logs["total_error"])
-    avg = np.mean(avg,axis=0)
-
-    np.save(f'{save_dir}/total_error.npy',avg)
+        error_collection.append(result.logs["total_error"])
+    avg = np.mean(error_collection,axis=0)
+    std = np.std(error_collection,axis=0)
+    np.save(f'{save_dir}/total_error_mean.npy',avg)
+    np.save(f'{save_dir}/total_error_std.npy',std)
 
 
 

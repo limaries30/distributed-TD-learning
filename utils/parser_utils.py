@@ -16,10 +16,12 @@ def make_parser():
     
 
     
-    parser.add_argument('--exp_id',default="6813c", type=str)
-    parser.add_argument('--agent_name',type=str,default="WangElia")
+    parser.add_argument('--exp_id',default="42fbd", type=str)
+    parser.add_argument('--agent_name',type=str,default="GradientTracking")
     parser.add_argument('--env_name',type=str,default="DistributedMDP_1")
     parser.add_argument('--num_states',type=int,default=3)
+
+
 
     parser.add_argument('--num_agents',type=int,default=8)
     parser.add_argument('--total_steps',type=int,default=int(5*1e5))
@@ -29,6 +31,8 @@ def make_parser():
 
     parser.add_argument('--gamma',type=float,default=0.8)
     parser.add_argument('--graph_type',type=str,default="ring")
+    parser.add_argument('--mixing_matrix_method',type=str,default="sinkhorn")
+
 
     parser.add_argument('--print_freq',type=int,default=2000)
     parser.add_argument('--log_root_dir',type=str,default="./results")

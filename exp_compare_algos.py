@@ -6,7 +6,7 @@ import numpy as np
 import yaml
 
 
-def run_lr_num_agents():
+def run_algos():
 
     lrs = [1/(2**i) for i in range(3,7)]
     num_agents_list = [8,32]
@@ -26,4 +26,4 @@ def run_lr_num_agents():
         
 if __name__ == '__main__':
 
-    run_lr_num_agents()
+    run_algos()

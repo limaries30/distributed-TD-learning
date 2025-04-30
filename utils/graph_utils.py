@@ -71,7 +71,11 @@ def get_graph(graph_type:str,num_agents:int):
     raise ValueError(f'Unknown graph type {graph_type}')
 
 
-def sinkhorn_iteration(L):
+def sinkhorn_iteration_mixing_matrix(L):
+    '''
+        - Sinkhorn, R. (1964). A relationship between arbitrary positive matrices and doubly stochastic matrices.
+        - generates mixing matrix based on L
+    '''
     Y = copy.deepcopy(L)
     n = Y.shape[0]
     arr = np.ones((n,n))#np.random.rand(n,n)
@@ -82,12 +86,17 @@ def sinkhorn_iteration(L):
         D1 = np.diagflat(1. /np.sum(arr,axis=1))
         D2 = np.diagflat(1. /np.sum(np.dot(D1,arr),axis=0))
         arr = np.dot(np.dot(D1,arr),D2)
+
+    assert np.sum(arr,axis=1)==1
+    assert np.sum(arr,axis=0)==1
+    
     return arr
 
 
-def generate_mixing_matrix(graph:np.array):
+def least_squares_mixing_matrix(graph:np.array):
     '''
-        From https://github.com/liboyue/Network-Distributed-Algorithm/blob/master/nda/optimizers/utils.py
+        - From https://github.com/liboyue/Network-Distributed-Algorithm/blob/master/nda/optimizers/utils.py
+        - generates mixing matrix based on L
     '''
 
     n = graph.shape[0]#10
@@ -128,3 +137,12 @@ def generate_mixing_matrix(graph:np.array):
         raise ValueError
 
     return W
+
+
+def get_mixing_matrix(method:str,graph:np.array):
+
+    if method=="sinkhorn":
+        return sinkhorn_iteration_mixing_matrix(graph)
+    if method=="least_squares":
+        return least_squares_mixing_matrix(graph)
+    raise ValueError(f'Unknown method name {method}')
