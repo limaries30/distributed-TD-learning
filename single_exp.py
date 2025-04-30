@@ -6,7 +6,7 @@ from logging_module import Logger
 import yaml
 
 
-def run_single_exp(args,save=True)->Logger:
+def run_single_exp(args,agent_config,save=True)->Logger:
 
     '''
         save : save the loggre file
@@ -22,8 +22,6 @@ def run_single_exp(args,save=True)->Logger:
     graph = get_graph(graph_type,num_agents)  # Characterizes the connection of the agents
 
     agent_name = args.agent_name
-    with open(f'./agents/configs/{agent_name}.yaml') as f:
-        agent_config = yaml.load(f, Loader=yaml.FullLoader)
     agent = get_agent(args.agent_name,args,agent_config,graph)
     
     env = get_mdp(env_name,args,graph)
@@ -31,16 +29,19 @@ def run_single_exp(args,save=True)->Logger:
 
     current_state = env.reset()
     for steps in range(total_steps):
-        
+
+        primal_error = env.calc_primal_error(agent.bar_theta)
+        dual_error =   env.calc_dual_error(agent.bar_w)
+        logger.add("total_error",primal_error+dual_error)
+
+
         next_state,rewards,info = env.step()
 
         agent.update(current_state,next_state,rewards,info)
 
         current_state = next_state
 
-        primal_error = env.calc_primal_error(agent.bar_theta)
-        dual_error =   env.calc_dual_error(agent.bar_w)
-        logger.add("total_error",primal_error+dual_error)
+
         
         if steps%args.print_freq==0:
             print(f'steps: {steps}')
@@ -56,4 +57,6 @@ if __name__ == '__main__':
 
 
     args = make_parser()
-    run_single_exp(args)
+    with open(f'./agents/configs/{args.agent_name}.yaml') as f:
+        agent_config = yaml.load(f, Loader=yaml.FullLoader)
+    run_single_exp(args,agent_config)

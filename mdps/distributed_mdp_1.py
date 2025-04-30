@@ -3,7 +3,9 @@ import numpy as np
 from utils.feature_utils import get_feature
 from utils.mdp_utils import make_prob_matrix,make_random_behavior_policy_matrix
 from typing import Tuple
+from scipy.linalg import pinvh
 
+from utils.math_utils import block_diag_matvec,kron_laplacian_matvec
 
 class DistributedMDP_1(AbstractDistributedMDP):
 
@@ -43,20 +45,26 @@ class DistributedMDP_1(AbstractDistributedMDP):
 
 
         self.laplacian_matrix = graph
-        self.bar_laplacian = np.kron(self.laplacian_matrix,np.eye(self.num_features)) #(num_agents*num_features,num_agents*num_features)
-        self.bar_lap_pinv = np.linalg.pinv(self.bar_laplacian)
+        self.lap_pinv = pinvh(self.laplacian_matrix)
+        #self.bar_laplacian = np.kron(self.laplacian_matrix,np.eye(self.num_features)) #(num_agents*num_features,num_agents*num_features)
+        #self.bar_lap_pinv = pinvh(self.bar_laplacian)
         
         barb = np.hstack([self.X.T@self.Dbeta@np.sum(np.multiply(self.P,self.barR[i,:,:]),axis=1)  for i  in range(self.num_agents)])[:,np.newaxis]
-        self.Lw_sol =  -self.barA@self.bar_theta_sol+barb
+        self.Lw_sol = block_diag_matvec(self.A,self.bar_theta_sol,self.num_agents)+barb 
+        self.dual_target = kron_laplacian_matvec(self.Lw_sol,self.lap_pinv,self.num_features)#self.bar_lap_pinv@self.Lw_sol
+        
 
-
-    def calc_primal_error(self,theta):
+    def calc_primal_error(self,theta:np.array)->float:
         error = 1/self.num_agents * np.sum(np.square(self.bar_theta_sol-theta))
         return error
 
-    def calc_dual_error(self,w):
-  
-        dual_error = 1/self.num_agents *np.sum(np.square(self.bar_laplacian@self.bar_lap_pinv@w-self.bar_lap_pinv@self.Lw_sol))
+    def calc_dual_error(self,w:np.array)->float:
+
+
+        Lpinvw = kron_laplacian_matvec(w,self.lap_pinv,self.num_features)
+        LLpinvw = kron_laplacian_matvec(Lpinvw,self.laplacian_matrix,self.num_features)
+        
+        dual_error = 1/self.num_agents *np.sum(np.square(LLpinvw-self.dual_target))
         return dual_error
 
 

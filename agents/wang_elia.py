@@ -1,6 +1,6 @@
 import numpy as np
 from agents.abstract_distributed_agent import AbstractAgent
-
+from utils.math_utils import block_diag_matvec,kron_laplacian_matvec
 
 class WangElia(AbstractAgent):
 
@@ -21,7 +21,6 @@ class WangElia(AbstractAgent):
         self.identity_matrix =  np.eye(self.num_agents)
 
         self.laplacian_matrix = graph
-        self.bar_laplacian = np.kron(self.laplacian_matrix,np.eye(self.num_features))
 
     def update(self,current_state:np.array,next_state:np.array,reward:np.array,info):
         '''
@@ -34,16 +33,17 @@ class WangElia(AbstractAgent):
         current_state = current_state[:,np.newaxis]
         reward = reward[:,np.newaxis]
 
-        # build large matrices
+
         A = -current_state@current_state.T+self.gamma*current_state@next_state.T # (num_feature,num_feature)
-        barA = np.kron(self.identity_matrix,A)  #(num_agents*num_feature,num_agents*num_feature)
         barR = np.kron(reward,current_state)   #(num_agents*num_feature,1)
 
-        # caculate updates
-        primal_delta = barR+barA@self.bar_theta-self.bar_laplacian@self.bar_theta \
-                        -self.bar_laplacian@self.bar_w
-        
-        dual_delta = self.bar_laplacian@self.bar_theta
+        # caculate updates, avoid building large matrices
+        barAtheta = block_diag_matvec(A,self.bar_theta,self.num_agents)
+        barLtheta = kron_laplacian_matvec(self.bar_theta,self.laplacian_matrix,self.num_features)
+        barLw =   kron_laplacian_matvec(self.bar_w,self.laplacian_matrix,self.num_features)
+
+        primal_delta = barR+   barAtheta - barLtheta -barLw
+        dual_delta = barLtheta
 
 
         self.bar_theta  = self.bar_theta+self.lr*primal_delta
