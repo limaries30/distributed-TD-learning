@@ -20,7 +20,7 @@ class DistributedMDP_1(AbstractDistributedMDP):
 
         X = np.array([[1,0],[0,1],[1,0]])
         # Transition matrix size of (|S|, |S|)
-        P = make_prob_matrix(num_states,num_states)
+        P = np.array([[1/3,1/3,1/3],[1/3,1/3,1/3],[1/3,1/3,1/3]])#make_prob_matrix(num_states,num_states)
 
         # Reward matrix size of ( N,|S|, |S|)
         barR = np.random.uniform(0, 10, size=(num_agents, num_states , num_states)).round(2)
@@ -56,7 +56,7 @@ class DistributedMDP_1(AbstractDistributedMDP):
 
     def calc_dual_error(self,w):
   
-        dual_error = 1/self.num_agents *np.sum(np.square(self.bar_laplacian@self.bar_lap_pinv@w-self.Lw_sol))
+        dual_error = 1/self.num_agents *np.sum(np.square(self.bar_laplacian@self.bar_lap_pinv@w-self.bar_lap_pinv@self.Lw_sol))
         return dual_error
 
 
