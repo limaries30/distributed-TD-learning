@@ -22,7 +22,7 @@ def run_single_exp(args,agent_config,save_dir,save=True)->Logger:
     graph = get_graph(graph_type,num_agents)  # Characterizes the connection of the agents
 
     agent_name = args.agent_name
-    agent = get_agent(args.agent_name,args,agent_config,graph)
+    agent = get_agent(agent_name,args,agent_config,graph)
     
     env = get_mdp(env_name,args,graph)
     total_steps = args.total_steps
@@ -31,8 +31,8 @@ def run_single_exp(args,agent_config,save_dir,save=True)->Logger:
     for steps in range(total_steps):
 
         primal_error = env.calc_primal_error(agent.bar_theta)
-        dual_error =   env.calc_dual_error(agent.bar_w)
-        logger.add("total_error",primal_error+dual_error)
+        #dual_error =   env.calc_dual_error(agent.bar_w) 
+        logger.add("primal_error",primal_error)
 
 
         next_state,rewards,info = env.step()
@@ -46,7 +46,7 @@ def run_single_exp(args,agent_config,save_dir,save=True)->Logger:
         if steps%args.print_freq==0:
             print(f'steps: {steps}')
             print('primal_error',primal_error)
-            print('dual_error',dual_error)
+            #print('dual_error',dual_error)
     
     if save:
         logger.save_logs()

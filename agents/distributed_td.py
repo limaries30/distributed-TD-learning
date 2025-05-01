@@ -5,10 +5,10 @@ from utils.graph_utils import get_mixing_matrix
 import copy 
 
 
-class GradientTracking(AbstractAgent):
+class DistributedTD(AbstractAgent):
     '''
-     Decentralized TD Tracking with Linear Function Approximation and its Finite-Time Analysis
-     https://proceedings.neurips.cc/paper/2020/file/9ec51f6eb240fb631a35864e13737bca-Paper.pdf
+    Doan, Thinh, Siva Maguluri, and Justin Romberg. 
+    "Finite-time analysis of distributed TD (0) with linear function approximation on multi-agent reinforcement learning."
     '''
 
     def __init__(self, num_states:int, num_agents:int, num_features:int,
@@ -52,14 +52,6 @@ class GradientTracking(AbstractAgent):
 
         A = -current_state@current_state.T+self.gamma*current_state@next_state.T # (num_feature,num_feature)
         barR = np.kron(reward,current_state)   #(num_agents*num_feature,1)
-
-
-
-        barWtheta = kron_laplacian_matvec(self.bar_theta,self.mixing_mtarix,self.num_features)
-        self.bar_theta  = barWtheta + self.lr * self.bar_w 
         barAtheta = block_diag_matvec(A,self.bar_theta,self.num_agents)
-        
-        curent_semi_grad =  barR+barAtheta
-        barLw =   kron_laplacian_matvec(self.bar_w,self.mixing_mtarix,self.num_features)
-        self.bar_w = barLw + curent_semi_grad -self.prev_semi_grad
-        self.prev_semi_grad = copy.deepcopy(curent_semi_grad)
+        yv = kron_laplacian_matvec(self.bar_theta,self.mixing_mtarix,self.num_features)
+        self.bar_theta = yv + self.lr * (barR+barAtheta)

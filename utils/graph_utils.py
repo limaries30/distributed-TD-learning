@@ -87,8 +87,10 @@ def sinkhorn_iteration_mixing_matrix(L):
         D2 = np.diagflat(1. /np.sum(np.dot(D1,arr),axis=0))
         arr = np.dot(np.dot(D1,arr),D2)
 
-    assert np.sum(arr,axis=1)==1
-    assert np.sum(arr,axis=0)==1
+    print(arr.shape)
+
+    assert (np.sum(arr,axis=1)==1).all()
+    assert (np.sum(arr,axis=0)==1).all()
     
     return arr
 

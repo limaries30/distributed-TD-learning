@@ -14,7 +14,7 @@ class WangElia(AbstractAgent):
 
         self.gamma = gamma
         self.agent_config = agent_config
-        self.lr = agent_config["alpha"]
+        self.lr = float(agent_config["alpha"])
         self.eta = agent_config["eta"]
 
 

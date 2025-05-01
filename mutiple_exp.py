@@ -19,11 +19,11 @@ def run_multiple_exp(args,agent_config,save_dir,num_processes=5):
     
     error_collection = []
     for result in results:
-        error_collection.append(result.logs["total_error"])
+        error_collection.append(result.logs["primal_error"])
     avg = np.mean(error_collection,axis=0)
     std = np.std(error_collection,axis=0)
-    np.save(f'{save_dir}/total_error_mean.npy',avg)
-    np.save(f'{save_dir}/total_error_std.npy',std)
+    np.save(f'{save_dir}/primal_error_mean.npy',avg)
+    np.save(f'{save_dir}/primal_error_std.npy',std)
 
 
 
